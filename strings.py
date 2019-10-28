@@ -49,7 +49,7 @@ html_producto_input = '''
                         aria-describedby="addon-wrapping" name="stock">
                 </div>
                 <br>
-                <button type="{}" class="btn btn-secondary">Cancelar</button>
+                <input type="{}" class="btn btn-secondary" value="Cancelar">
                 <input type="submit" class="btn btn-primary" value="Guardar">
             </form>
   </div>

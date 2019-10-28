@@ -11,51 +11,9 @@
 </head>
 
 <body>
-    <div class="card">
-        <div class="card-header">
-            Crear nuevo porducto:
-        </div>
-        <div class="card-body">
-            <form method="POST" action="/">
-                <div class="input-group flex-nowrap">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="addon-wrapping">Nombre</span>
-                    </div>
-                    <input type="text" class="form-control" placeholder="" aria-label="nombre"
-                        aria-describedby="addon-wrapping" name="nombre">
-                </div>
-                <br>
-                <div class="input-group">
-                        <div class="input-group-prepend">
-                          <span class="input-group-text">Descripción</span>
-                        </div>
-                        <textarea class="form-control" aria-label="With textarea" name="descripcion"></textarea>
-                      </div>
-                <br>
-                <div class="input-group flex-nowrap">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="addon-wrapping">Precio</span>
-                    </div>
-                    <input type="text" class="form-control" placeholder="" aria-label="precio"
-                        aria-describedby="addon-wrapping" name="precio">
-                </div>
-                <br>
-                <div class="input-group flex-nowrap">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="addon-wrapping">Stock</span>
-                    </div>
-                    <input type="text" class="form-control" placeholder="" aria-label="stock"
-                        aria-describedby="addon-wrapping" name="stock">
-                </div>
-                <br>
-                <input type="submit" class="btn btn-primary" value="Crear">
-            </form>
-        </div>
-    </div>
-
-    <!-- TARJETAS CON LOS ELEMENTOS DEL MENÚ, CADA UNA MUESTRA LA INFORMACIÓN
-    Y LOS BOTONES DE EDITAR Y ELIMINAR -->
-
+    <!-- TARJETA CON INPUTS -->
+    {{ tarjeta_input|safe }}
+    <!-- TARJETAS CON LOS ELEMENTOS DEL MENÚ-->
     {% if tarjetas %}
         {{ tarjetas|safe }}
     {% endif %}

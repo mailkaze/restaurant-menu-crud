@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
 from config import DATABASE_URI
-from strings import html_producto
+from strings import html_producto, html_producto_input
 
 app = Flask(__name__)
 
@@ -48,7 +48,12 @@ def menu():
     #aquí vamos a mandar variables para cargar la tarjeta de edición de producto,
     #como el titulo de la tarjeta, los valores de los campos si hay info y si el
     #botón cancelar debe estar oculto o no:
-    return render_template('menu.html', tarjetas=tarjetas)
+    tarjeta_input = html_producto_input.format(
+        'Crear un nuevo producto',
+        '','','','',
+        'hidden'
+        )
+    return render_template('menu.html', tarjeta_input=tarjeta_input, tarjetas=tarjetas)
 
 
 if __name__ == '__main__':
