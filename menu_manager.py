@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
 from config import DATABASE_URI
-from strings import html_producto, html_producto_input
+from strings import html_producto, html_producto_input, html_encontrado
 
 app = Flask(__name__)
 
@@ -26,13 +26,21 @@ class Producto(db.Model):
 @app.route('/', methods=['GET', 'POST'])
 def menu():
     if request.method == 'POST':
-        producto = Producto(
-            nombre = request.form.get('nombre'),
-            descripcion = request.form.get('descripcion'),
-            precio = request.form.get('precio'),
-            stock = request.form.get('stock')
-        )
-        db.session.add(producto)
+        if request.form.get('id_producto'):
+            id_editado = request.form.get('id_producto')
+            producto_editado = Producto.query.filter_by(id_producto=id_editado).first()
+            producto_editado.nombre = request.form.get('nombre'),
+            producto_editado.descripcion = request.form.get('descripcion'),
+            producto_editado.precio = request.form.get('precio'),
+            producto_editado.stock = request.form.get('stock')
+        else:
+            producto = Producto(
+                nombre = request.form.get('nombre'),
+                descripcion = request.form.get('descripcion'),
+                precio = request.form.get('precio'),
+                stock = request.form.get('stock')
+            )
+            db.session.add(producto)
         db.session.commit()
 
     productos = Producto.query.all()
@@ -42,7 +50,9 @@ def menu():
             p.nombre,
             p.descripcion,
             p.precio,
-            p.stock
+            p.stock,
+            p.id_producto,
+            p.id_producto
         )
         tarjetas += tarjeta
     #aquí vamos a mandar variables para cargar la tarjeta de edición de producto,
@@ -50,11 +60,49 @@ def menu():
     #botón cancelar debe estar oculto o no:
     tarjeta_input = html_producto_input.format(
         'Crear un nuevo producto',
-        '','','','',
+        '','','','','',''
         'hidden'
         )
     return render_template('menu.html', tarjeta_input=tarjeta_input, tarjetas=tarjetas)
 
+@app.route('/editar', methods=['GET','POST'])
+def editar():
+    id_seleccionado = request.form.get('id_producto')
+    p = Producto.query.filter_by(id_producto=id_seleccionado).first()
+    tarjeta_editar = html_producto_input.format(
+        'Editar Producto:',
+        p.nombre,
+        p.descripcion,
+        p.precio,
+        p.stock,
+        p.id_producto,
+        'button'
+    )
+
+    return render_template('editar.html', tarjeta_input=tarjeta_editar)
+
+@app.route('/borrar', methods=['POST'])
+def borrar():
+    #TODO, en realidad esto tiene que redirigir a una página donde se le pregunta si quiere 
+    #eliminar de verdad, y esa página recién lleva aquí
+    print('entra en el metodo')
+    id_seleccionado = request.form.get('id_producto')
+    p = Producto.query.filter_by(id_producto=id_seleccionado).first()
+    db.session.delete(p)
+    db.session.commit()
+    return redirect('/')
+
+@app.route('/buscar', methods=['GET', 'POST'])
+def buscar():
+    busqueda = request.form.get('busqueda')
+    encontrados = Producto.query.filter(Producto.nombre.like('%{}%'.format(busqueda))).all()
+    resultados = []
+    html = html_encontrado
+    for e in encontrados:
+        resultados.append(html.format(e.nombre))
+    return render_template('buscar.html', resultados=resultados)
+    #TODO: crear el string html_encontrados
+    #TODO: crear buscar.html
 
 if __name__ == '__main__':
     db.create_all()
