@@ -33,36 +33,48 @@ def validar_repetido(dato, tabla, columna):
 
 @app.route('/', methods=['GET', 'POST'])
 def menu():
+    mensaje_error = ''
     if request.method == 'POST':
         #TODO esto solo es una prueba, ahora hay que indentarlos y darles consecuencias
-        if validar_vacio(request.form.get('nombre')):
-            print('tiene nombre')
+        nom = validar_vacio(request.form.get('nombre'))
+        pre = validar_vacio(request.form.get('precio'))
+        sto = validar_vacio(request.form.get('stock'))
+        if nom and pre and sto:
+            #los campos requeridos no están en blanco
+            if validar_repetido(request.form.get('nombre'), Producto, Producto.nombre):
+                #el campo nombre no está repetido
+                if request.form.get('id_producto'):
+                    #se está editando un producto existente
+                    id_editado = request.form.get('id_producto')
+                    producto_editado = Producto.query.filter_by(id_producto=id_editado).first()
+                    producto_editado.nombre = request.form.get('nombre'),
+                    producto_editado.descripcion = request.form.get('descripcion'),
+                    producto_editado.precio = request.form.get('precio'),
+                    producto_editado.stock = request.form.get('stock')
+                else:
+                    #se está intentando crear un nuevo producto
+                    producto = Producto(
+                        nombre = request.form.get('nombre'),
+                        descripcion = request.form.get('descripcion'),
+                        precio = request.form.get('precio'),
+                        stock = request.form.get('stock')
+                    )
+                    db.session.add(producto)
+                db.session.commit()
+            else:
+                #error, el nombre de producto está repetido
+                print('error: nombre ya existe')
+                mensaje_error = 'Este producto ya existe.'
+                return render_template('menu.html', mensaje_error=mensaje_error)
         else:
-            print('nombre está vacío')
-        if validar_repetido(request.form.get('nombre'), Producto, Producto.nombre):
-            print('no está repetido')
-        else:
-            print('nombre está repetido')
+            #error, hay campos requeridos en blanco
+            print('error: campos vacíos')
+            mensaje_error = 'Los campos Nombre, Precio y Stock no pueden estar en blanco.'
+            return render_template('menu.html', mensaje_error=mensaje_error)
+        
 
-        if request.form.get('id_producto'):
-            #se está editando un producto existente
-            id_editado = request.form.get('id_producto')
-            producto_editado = Producto.query.filter_by(id_producto=id_editado).first()
-            producto_editado.nombre = request.form.get('nombre'),
-            producto_editado.descripcion = request.form.get('descripcion'),
-            producto_editado.precio = request.form.get('precio'),
-            producto_editado.stock = request.form.get('stock')
-        else:
-            #se está intentando crear un nuevo producto
-            producto = Producto(
-                nombre = request.form.get('nombre'),
-                descripcion = request.form.get('descripcion'),
-                precio = request.form.get('precio'),
-                stock = request.form.get('stock')
-            )
-            #db.session.add(producto)
-        #db.session.commit()
-
+    #A partir de aquí se ejecuta independientemente si el method es GET o POST:    
+    #cargamos la lista de tarjetas:
     productos = Producto.query.all()
     tarjetas = ''
     for p in productos:
