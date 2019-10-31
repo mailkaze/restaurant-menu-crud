@@ -2,6 +2,7 @@ from flask import Flask, request, render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
 from config import DATABASE_URI
 from strings import html_producto, html_producto_input, html_borrar
+from validar import validar_vacio, validar_entero, validar_float
 
 app = Flask(__name__)
 
@@ -23,10 +24,28 @@ class Producto(db.Model):
                 self.nombre, self.descripcion, self.precio, self.stock
                 )
 
+def validar_repetido(dato, tabla, columna):
+    #comprobar que el dato no está ya en esa columna de esa tabla
+    if db.session.query(tabla).filter(columna == dato).count() == 0:
+        return dato
+    else:
+        return None
+
 @app.route('/', methods=['GET', 'POST'])
 def menu():
     if request.method == 'POST':
+        #TODO esto solo es una prueba, ahora hay que indentarlos y darles consecuencias
+        if validar_vacio(request.form.get('nombre')):
+            print('tiene nombre')
+        else:
+            print('nombre está vacío')
+        if validar_repetido(request.form.get('nombre'), Producto, Producto.nombre):
+            print('no está repetido')
+        else:
+            print('nombre está repetido')
+
         if request.form.get('id_producto'):
+            #se está editando un producto existente
             id_editado = request.form.get('id_producto')
             producto_editado = Producto.query.filter_by(id_producto=id_editado).first()
             producto_editado.nombre = request.form.get('nombre'),
@@ -34,14 +53,15 @@ def menu():
             producto_editado.precio = request.form.get('precio'),
             producto_editado.stock = request.form.get('stock')
         else:
+            #se está intentando crear un nuevo producto
             producto = Producto(
                 nombre = request.form.get('nombre'),
                 descripcion = request.form.get('descripcion'),
                 precio = request.form.get('precio'),
                 stock = request.form.get('stock')
             )
-            db.session.add(producto)
-        db.session.commit()
+            #db.session.add(producto)
+        #db.session.commit()
 
     productos = Producto.query.all()
     tarjetas = ''

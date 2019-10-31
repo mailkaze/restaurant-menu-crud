@@ -1,15 +1,21 @@
-import sqlalchemy
 
-#realizar conexion con la base de datos
-
-def validar_repetido(dato, tabla, columna):
-    #comprobar que el dato no está ya en esa columna de esa tabla
-    pass
+def validar_vacio(dato):
+    #comprobar que no esté vacío
+    if dato is not '':
+        return dato
+    else:
+        return None
 
 def validar_float(dato):
     #que sea un numero float o entero
-    pass
+    try:
+        return float(dato)
+    except ValueError:
+        return None
 
 def validar_entero(dato):
     #que sea un numero entero
-    pass
+    try:
+        return int(dato)
+    except ValueError:
+        return None
