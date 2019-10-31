@@ -94,15 +94,23 @@ def borrar():
 
 @app.route('/buscar', methods=['GET', 'POST'])
 def buscar():
-    busqueda = request.form.get('busqueda')
-    encontrados = Producto.query.filter(Producto.nombre.like('%{}%'.format(busqueda))).all()
-    resultados = []
-    html = html_encontrado
+    busqueda = '%{}%'.format(request.form.get('busqueda'))
+    #ilike en vez de like, evita los problemas con mayusculas y minusculas en la búsqueda.
+    encontrados = Producto.query.filter(Producto.nombre.ilike(busqueda)).all()
+    tarjetas = ''
     for e in encontrados:
-        resultados.append(html.format(e.nombre))
-    return render_template('buscar.html', resultados=resultados)
-    #TODO: crear el string html_encontrados
-    #TODO: crear buscar.html
+        tarjeta = html_producto.format(
+            e.nombre,
+            e.descripcion,
+            e.precio,
+            e.stock,
+            e.id_producto,
+            e.id_producto
+        )
+        tarjetas += tarjeta
+    print(tarjetas)
+    return render_template('buscar.html', resultados=tarjetas)
+
 
 if __name__ == '__main__':
     db.create_all()
