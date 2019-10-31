@@ -1,0 +1,11 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <!--- campo de búsqueda -->
+
+    {% if resultados %}
+        <!-- tarjetas con los resultados -->
+    {% else %}
+        <p>No hay coincidencias.</p>
+    {% endif %}
+{% endblock %}

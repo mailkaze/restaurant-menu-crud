@@ -1,16 +1,16 @@
 html_producto = '''
 <p>
 <div class="card" style="width: 18rem;">
-  <div class="card-body">
+  <div class="card-body" style="overflow:auto">
     <h5 class="card-title">{}</h5>
     <p class="card-text">{}</p>
     <p class="card-text">Precio: Bs. {}</p>
     <p class="card-text">Quedan {} unidades</p>
-    <form method="POST" action="/editar">
+    <form method="POST" action="/editar" style="display: inline-block;">
       <input type="hidden" value="{}" name="id_producto">
       <button type="submit" class="btn btn-success">Editar</button>
     </form>
-    <form method="POST" action="./borrar">
+    <form method="POST" action="/borrar" style="display: inline-block;">
       <input type="hidden" value="{}" name="id_producto">
       <button type="submit" class="btn btn-danger">Borrar</button>
     </form>
