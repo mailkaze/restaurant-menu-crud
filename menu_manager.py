@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
 from config import DATABASE_URI
-from strings import html_producto, html_producto_input, html_encontrado
+from strings import html_producto, html_producto_input, html_borrar
 
 app = Flask(__name__)
 
@@ -81,11 +81,24 @@ def editar():
 
     return render_template('editar.html', tarjeta_input=tarjeta_editar)
 
+@app.route('/confirmar', methods=['POST'])
+def confirmar_borrado():
+    id_seleccionado = request.form.get('id_producto')
+    p = Producto.query.filter_by(id_producto=id_seleccionado).first()
+    tarjeta = html_borrar.format(
+        p.nombre,
+        p.descripcion,
+        p.precio,
+        p.stock,
+        p.id_producto,
+        p.id_producto
+    )
+    return render_template('confirmar.html', tarjeta=tarjeta)
+
 @app.route('/borrar', methods=['POST'])
 def borrar():
     #TODO, en realidad esto tiene que redirigir a una página donde se le pregunta si quiere 
     #eliminar de verdad, y esa página recién lleva aquí
-    print('entra en el metodo')
     id_seleccionado = request.form.get('id_producto')
     p = Producto.query.filter_by(id_producto=id_seleccionado).first()
     db.session.delete(p)

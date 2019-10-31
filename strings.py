@@ -10,7 +10,7 @@ html_producto = '''
       <input type="hidden" value="{}" name="id_producto">
       <button type="submit" class="btn btn-success">Editar</button>
     </form>
-    <form method="POST" action="/borrar" style="display: inline-block;">
+    <form method="POST" action="/confirmar" style="display: inline-block;">
       <input type="hidden" value="{}" name="id_producto">
       <button type="submit" class="btn btn-danger">Borrar</button>
     </form>
@@ -68,6 +68,22 @@ html_producto_input = '''
 </p>
 '''
 
-html_encontrado = '''
-
+html_borrar = '''
+<p>
+<div class="card" style="width: 18rem;">
+  <div class="card-body" style="overflow:auto">
+    <h5 class="card-title">{}</h5>
+    <p class="card-text">{}</p>
+    <p class="card-text">Precio: Bs. {}</p>
+    <p class="card-text">Quedan {} unidades</p>
+    <form method="POST" action="./borrar">
+      <a href="/">
+        <input type="button" value="Cancelar" class="btn btn-primary" width="match-parent"/>
+      </a>
+      <input type="hidden" value="{}" name="id_producto">
+      <button type="submit" class="btn btn-danger">Confirmar borrado (irreversible)</button>
+    </form>
+  </div>
+</div>
+</p>
 '''
