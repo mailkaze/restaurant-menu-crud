@@ -51,6 +51,7 @@ def menu():
                     producto_editado.descripcion = request.form.get('descripcion'),
                     producto_editado.precio = request.form.get('precio'),
                     producto_editado.stock = request.form.get('stock')
+                    mensaje = '<p><font color="green">Producto editado con éxito.</font></p>'
                 else:
                     #se está intentando crear un nuevo producto
                     producto = Producto(
@@ -60,17 +61,15 @@ def menu():
                         stock = request.form.get('stock')
                     )
                     db.session.add(producto)
+                    mensaje = '<p><font color="green">Producto creado con éxito.</font></p>'
                 db.session.commit()
             else:
                 #error, el nombre de producto está repetido
-                print('error: nombre ya existe')
-                mensaje_error = 'Este producto ya existe.'
-                return render_template('menu.html', mensaje_error=mensaje_error)
+                mensaje = '<p><font color="red">ERROR: Este producto ya existe.</font></p>'
+                #return render_template('menu.html', mensaje_error=mensaje_error)
         else:
             #error, hay campos requeridos en blanco
-            print('error: campos vacíos')
-            mensaje_error = 'Los campos Nombre, Precio y Stock no pueden estar en blanco.'
-            return render_template('menu.html', mensaje_error=mensaje_error)
+            mensaje = '<p><font color="red">ERROR: Los campos Nombre, Precio y Stock no pueden estar en blanco.</font></p>'
         
 
     #A partir de aquí se ejecuta independientemente si el method es GET o POST:    
@@ -95,7 +94,7 @@ def menu():
         '','','','','',''
         'hidden'
         )
-    return render_template('menu.html', tarjeta_input=tarjeta_input, tarjetas=tarjetas)
+    return render_template('menu.html', mensaje=mensaje, tarjeta_input=tarjeta_input, tarjetas=tarjetas)
 
 @app.route('/editar', methods=['GET','POST'])
 def editar():

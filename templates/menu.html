@@ -1,8 +1,9 @@
 {% extends 'layout.html' %}
-{% if mensaje_error %}
-    <p>{{ mensaje_error }}</p>
-{% endif %}
+
 {% block content %}
+    {% if mensaje %}
+        {{ mensaje|safe }}
+    {% endif %}
     <!-- TARJETA CON INPUTS -->
     {{ tarjeta_input|safe }}
     <!-- TARJETAS CON LOS ELEMENTOS DEL MENÚ-->
