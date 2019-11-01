@@ -33,7 +33,7 @@ def validar_repetido(dato, tabla, columna):
 
 @app.route('/', methods=['GET', 'POST'])
 def menu():
-    mensaje_error = ''
+    mensaje = ''
     if request.method == 'POST':
         #TODO esto solo es una prueba, ahora hay que indentarlos y darles consecuencias
         nom = validar_vacio(request.form.get('nombre'))
@@ -41,19 +41,19 @@ def menu():
         sto = validar_vacio(request.form.get('stock'))
         if nom and pre and sto:
             #los campos requeridos no están en blanco
-            if validar_repetido(request.form.get('nombre'), Producto, Producto.nombre):
-                #el campo nombre no está repetido
-                if request.form.get('id_producto'):
-                    #se está editando un producto existente
-                    id_editado = request.form.get('id_producto')
-                    producto_editado = Producto.query.filter_by(id_producto=id_editado).first()
-                    producto_editado.nombre = request.form.get('nombre'),
-                    producto_editado.descripcion = request.form.get('descripcion'),
-                    producto_editado.precio = request.form.get('precio'),
-                    producto_editado.stock = request.form.get('stock')
-                    mensaje = '<p><font color="green">Producto editado con éxito.</font></p>'
-                else:
-                    #se está intentando crear un nuevo producto
+            if request.form.get('id_producto'):
+                #se está editando un producto existente
+                id_editado = request.form.get('id_producto')
+                producto_editado = Producto.query.filter_by(id_producto=id_editado).first()
+                producto_editado.nombre = request.form.get('nombre'),
+                producto_editado.descripcion = request.form.get('descripcion'),
+                producto_editado.precio = request.form.get('precio'),
+                producto_editado.stock = request.form.get('stock')
+                mensaje = '<p><font color="green">Producto editado con éxito.</font></p>'
+            else:
+                #se está intentando crear un nuevo producto
+                if validar_repetido(request.form.get('nombre'), Producto, Producto.nombre):
+                    #el campo nombre no está repetido
                     producto = Producto(
                         nombre = request.form.get('nombre'),
                         descripcion = request.form.get('descripcion'),
@@ -62,11 +62,10 @@ def menu():
                     )
                     db.session.add(producto)
                     mensaje = '<p><font color="green">Producto creado con éxito.</font></p>'
-                db.session.commit()
-            else:
-                #error, el nombre de producto está repetido
-                mensaje = '<p><font color="red">ERROR: Este producto ya existe.</font></p>'
-                #return render_template('menu.html', mensaje_error=mensaje_error)
+                else:
+                    #error, el nombre de producto está repetido
+                    mensaje = '<p><font color="red">ERROR: Este producto ya existe.</font></p>'
+            db.session.commit()
         else:
             #error, hay campos requeridos en blanco
             mensaje = '<p><font color="red">ERROR: Los campos Nombre, Precio y Stock no pueden estar en blanco.</font></p>'
