@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, redirect
 from flask_sqlalchemy import SQLAlchemy
 from config import DATABASE_URI
 from strings import html_producto, html_producto_input, html_borrar
-from validar import validar_vacio, validar_entero, validar_float
+from validar import validar_vacio, validar_entero, validar_float, validar_coma
 
 app = Flask(__name__)
 

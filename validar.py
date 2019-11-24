@@ -19,3 +19,8 @@ def validar_entero(dato):
         return int(dato)
     except ValueError:
         return None
+
+def validar_coma(dato):
+    #si detecta una coma en el dato, la convierte a un punto.
+    if ',' in dato:
+        return dato.replace(',', '.')
